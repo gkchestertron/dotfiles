@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/Users/john/svn/Development/trunk'
+let g:netrw_dirhist_2='/Users/john/svn/Development/trunk/src'
+let g:netrw_dirhist_3='/Users/john/svn/Development/trunk/src/util'
+let g:netrw_dirhist_4='/Users/john/svn/Development/trunk/src/util/reports'
+let g:netrw_dirhist_5='/Users/john/svn/Development/trunk/src/ini'
