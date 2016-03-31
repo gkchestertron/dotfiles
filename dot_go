@@ -1,0 +1,15 @@
+#!/bin/bash
+mkdir old_dotfiles
+
+cp -rf ~/.vim old_dotfiles/
+cp ~/.vimrc old_dotfiles/
+cp ~/.bashrc old_dotfiles/
+cp ~/.bash_profile old_dotfiles/
+
+cp -rf .vim ~/
+cp .vimrc ~/
+cp .bashrc ~/
+cp .bash_profile ~/
+cp git-completion.bash ~/
+
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
