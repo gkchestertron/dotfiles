@@ -1,5 +1,76 @@
-alias serve='open http://localhost:8000 && python -m SimpleHTTPServer'
+export CLUTCH_ENV=stage
+for f in /etc/bash_completion.d/*; do source $f; done
+
+set -o vi
+
+rechrome () {
+  osascript -e 'activate application "Google Chrome"'
+  osascript -e 'tell application "System Events" to keystroke "r" using {command down}'
+}
+
+stacktrace () {
+  files=""
+  paste=`pbpaste`
+  cmd="set statusline=%F | set laststatus=2 | copen | set switchbuf+=usetab,newtab"
+  cur_dir="${PWD##*/}"
+
+  while read -r line
+  do
+    file=`echo $line | awk "{gsub(/^.+$cur_dir\//, \"\"); gsub(/:.+$/, \"\")}1"`
+    linenumber=`echo $line | awk '{gsub(/^[^:]+:/, ""); gsub(/:[^:]+$/, "")}1'`
+    col=`echo $line | awk '{gsub(/.+:/, ""); gsub(/[).]*$/, "")}1'`
+    files="$files {\"filename\":\"$file\", \"lnum\": $linenumber, \"col\": $col},"
+  done <<< "$paste"
+
+  cmd="call setqflist([$files]) | $cmd"
+
+  vim -c "$cmd"
+}
+
+viff () {
+  diff=$1
+  input=`git diff $diff --name-only`
+  files=""
+
+  while read -r line
+  do
+    files="$files {\"filename\":\"$line\", \"lnum\":1},"
+  done <<< "$input"
+
+  vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
+}
+
+alias bestcohort='ssh stage -t screen -r'
+alias clutch='cd ~/projects/woodshop/skyClutch/'
+alias stageclutch='export CLUTCH_ENV=stage'
+alias localclutch='export CLUTCH_ENV=local'
+alias postgresser='postgres -D /usr/local/var/postgres'
+alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
+alias woodshop='cd ~/projects/woodshop/'
+alias mycom='sudo /Library/StartupItems/MySQLCOM/MySQLCOM'
+alias mampdocs='cd /Applications/MAMP/htdocs/'
+alias pyserv='python -m SimpleHTTPServer & open http://localhost:8000'
+alias sub='open -a "Sublime Text"'
+alias phpserv='sudo apachectl -d $PWD -k start && open http://localhost'
+alias phpstop='sudo apachectl -d $PWD -k stop'
 alias gdiff='git diff --color=always | less -r'
+alias masterbase='git rebase master'
+alias gethead='git checkout master; git svn rebase;'
+alias pushup='git svn dcommit --dry-run; git svn dcommit'
+alias rename='git branch -m'
+alias branch='clear; git branch -vv'
+alias master='git checkout master'
+alias status='clear; git branch -vv; git status'
+alias czk='git checkout'
+alias track='git branch --set-upstream-to'
+alias commit='git add -A; git commit'
+alias commend='git add -A; git commit --amend'
+alias herokify='git push heroku'
+alias glog='git lg'
+# git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias hdiff='clear; git diff HEAD^ HEAD --color-words'
+alias ipad='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone\ Simulator.app/Contents/MacOS/iPhone\ Simulator -SimulateApplication /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/Applications/MobileSafari.app/MobileSafari'
+alias vimw='cd ~/git/webapp; vim -c NJ -c TNT -c TNL -c TNI -c TNA -c tabn'
 alias nerd='vim -c Nerd'
 source ~/git-completion.bash
 export TERM='xterm-256color'

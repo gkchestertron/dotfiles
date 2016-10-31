@@ -255,10 +255,10 @@ snippet din
 # casper current path
 snippet cp
 	transactions/form/register-new-vehicle/
-# casper then
+# then
 snippet th
-	.then(function () {
-		${0}
+	.then(function (${1}) {
+		${2:body}
 	})
 # casper test comment
 snippet cc
@@ -425,11 +425,13 @@ snippet v2
 	.then(function () {
 		this.grab('v2 screenshots', '$1 v2 lienholder %ln%');
 	})
-# try/catch avrs
-snippet try
-	try {
+# node module exports object
+snippet mxo
+	module.exports = {
 		${0}
-	}
-	catch (error) {
-		avrs.backbone.collections.ClientErrors.addError(error + ' %c-e%', 'CaughtException');
+	};
+# node module exports function
+snippet mxf
+	module.exports = function (${1}) {
+		${2}
 	}

@@ -1,4 +1,9 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/Users/fellmanj/git/webapp/src'
-let g:netrw_dirhist_2='/Users/fellmanj/git/webapp/src/core'
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/Users/johnfellman/.vim'
+let g:netrw_dirhist_2='/Users/johnfellman/.vim/bundle'
+let g:netrw_dirhist_3='/Users/johnfellman/.vim/bundle/snippets'
+let g:netrw_dirhist_4='/Users/johnfellman/.vim/bundle/snippets/snippets'
+let g:netrw_dirhist_5='/Users/johnfellman'
+let g:netrw_dirhist_6='/private/etc/ssh'
+let g:netrw_dirhist_7='/Users/johnfellman/.ssh'
