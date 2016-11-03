@@ -1,4 +1,3 @@
-export CLUTCH_ENV=stage
 source ~/git-completion.bash
 
 set -o vi
