@@ -2,6 +2,41 @@ source ~/git-completion.bash
 
 set -o vi
 
+gk () {
+  match="$1"
+  index=$2
+  if [ -z $match ]
+  then
+    echo please provide a string to match for branch checkout - also pass index if multiple exist
+    return
+  fi
+
+  matches=(`git branch -a | sed -E 's/(\* |  |  remotes\/(origin|upstream)\/)//' | grep $match | sort -u`)
+
+  # if master checkout master
+  if [ $match = "master" ]
+  then
+    git checkout master
+
+  # checkout if only one match
+  elif [ "${#matches[@]}" -eq 1 ]
+  then
+    git checkout ${matches[0]}
+
+  # checkout by index if given
+  elif [ ! -z "$index" ]
+  then
+    git checkout ${matches[$index]}
+
+  # else 
+  else
+    for ((i=0; i<${#matches[@]};i++))
+    do
+      echo ${matches[$i]}
+    done
+  fi
+}
+
 rechrome () {
   osascript -e 'activate application "Google Chrome"'
   osascript -e 'tell application "System Events" to keystroke "r" using {command down}'
@@ -39,13 +74,46 @@ viff () {
   vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
 }
 
-alias bestcohort='ssh stage -t screen -r'
-alias clutch='cd ~/projects/woodshop/skyClutch/'
-alias stageclutch='export CLUTCH_ENV=stage'
-alias localclutch='export CLUTCH_ENV=local'
+live-dev () {
+  # default to TYTHON Tunnel server - prob change this when I figure out what it is I do here
+  server="0361"
+  port="$2"
+
+  # use first arg if given
+  if [ ! -z "$1" ]
+  then
+    server="$1"
+
+  # use env var if not empty
+  elif [ ! -z $BP_HOSTNAME ]
+  then
+    server="$BP_HOSTNAME"
+  fi
+
+  # if we just passed a num assume normal test server format
+  if [ ${#server} -le 4 ]
+  then
+    server="onxv$server.ott.ciena.com"
+  fi
+
+  # serve it up with live dev back end
+  if [ -z $port ]
+  then
+    port="4300"
+  fi
+
+  ember s -e live-dev --proxy "https://$server" --secure-proxy=false --port=$port --live-reload-port="$port"1
+}
+
+gread () {
+  open "http://localhost:6419"
+  grip "$1"
+}
+
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
-alias woodshop='cd ~/projects/woodshop/'
+alias woodshop='cd ~/woodshop/'
+alias work='cd ~/dev/'
 alias mycom='sudo /Library/StartupItems/MySQLCOM/MySQLCOM'
 alias mampdocs='cd /Applications/MAMP/htdocs/'
 alias pyserv='python -m SimpleHTTPServer & open http://localhost:8000'
@@ -130,3 +198,9 @@ then
       source "$tmp_file" && rm -f "$tmp_file"
   }; alias_completion
 fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+source ~/notes/notes

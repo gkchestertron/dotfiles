@@ -101,9 +101,18 @@ snippet get
 # Get Element
 snippet gett
 	getElementBy${1:Id}('${2}')
-# console.log (Firebug)
+# console.log
 snippet cl
-	console.log(${0});
+	console.log(${1}, "${2}")
+# Ember Logger
+snippet el
+	Ember.Logger.log(${0})
+# console.trace
+snippet clt
+	console.trace(${0:'wtf?'})
+# console.log with json pretty stringify
+snippet cls
+	console.log(JSON.stringify(${1}, null, 2), '${2:bug}')
 # return
 snippet ret
 	return ${0:result}
@@ -126,11 +135,11 @@ snippet @par
 snippet @ret
 	@return {${1:type}} ${0:description}
 # JSON.parse
-snippet jsonp
-	JSON.parse(${0:jstr});
+snippet jsp
+	JSON.parse(${0:jst})
 # JSON.stringify
-snippet jsons
-	JSON.stringify(${0:object});
+snippet jst
+	JSON.stringify(${0:object}, null, 2)
 # self-defining function
 snippet sdf
 	var ${1:function_name} = function (${2:argument}) {

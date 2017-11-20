@@ -1,36 +1,21 @@
+execute pathogen#infect()
 colorscheme desert
 noremap ; :
-imap <C-v>p <C-k>p*
-map <C-h> /\/\*<CR>
-command NJ :NERDTree src/bnb/srcjs/
-command NT :NERDTree src/bnb/templates/
-command NL :NERDTree src/bnb/less/
-command NC :NERDTree src/core/
-command NI :NERDTree src/core/identity/
-command NA :NERDTree src/core/api/v1/
-command ND :NERDTree src/dmva/
-command TNJ :tabe | NERDTree src/bnb/srcjs/
-command TNT :tabe | NERDTree src/bnb/templates/
-command TNL :tabe | NERDTree src/bnb/less/
-command TNC :tabe | NERDTree src/core/
-command TNI :tabe | NERDTree src/core/identity/
-command TNA :tabe | NERDTree src/core/api/v1/
-command TC  :tabclose
 command Nerd :NERDTree
 command Json :%!python -m json.tool
 command -nargs=1 MS :mksession ~/vimsessions/<args>.vim 
 command -nargs=1 SS :mksession! ~/vimsessions/<args>.vim 
 command -nargs=1 LS :source ~/vimsessions/<args>.vim | highlight ConsoleLog ctermbg=8 ctermfg=yellow | highlight OverLength ctermbg=17
 command LL :source ~/vimsessions/last.vim | highlight ConsoleLog ctermbg=8 ctermfg=yellow | highlight OverLength ctermbg=17
+command -nargs=1 Find :execute 'grep -r <args> --exclude-dir="node_modules" --exclude-dir="dist" --exclude-dir="bower_components" --exclude-dir="tmp" --exclude-dir="coverage" --exclude-dir="tests" --exclude-dir="mirage" --exclude="DEVELOPMENT-SCENARIOS.md" --exclude="CHANGELOG.md" --exclude="CHANGELOG.md" ./*' | copen
 set smartindent
 set cindent
 set ai
 set ic
 set aw
 set nu
-" set cursorline
+set cursorline
 set incsearch
-execute pathogen#infect()
 syntax on
 filetype indent plugin on
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -49,7 +34,6 @@ autocmd BufWinEnter * :highlight SignColumn ctermbg=black
 autocmd BufWinEnter * :set ts=2 | set sw=2 | set expandtab | set softtabstop=2
 autocmd BufWinEnter *.md :set syntax=markdown
 autocmd BufWinEnter *.ejs :set syntax=html
-autocmd BufWinEnter ~/git/webapp**/* :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
 set pastetoggle=<F1>
 nnoremap <F2> :set nonumber!<CR>
@@ -78,3 +62,6 @@ set encoding=utf-8
 set fileencoding=utf-8
 setglobal fileencoding=utf-8
 set backspace=indent,eol,start
+
+let g:syntastic_javascript_checkers=['eslint']
+let g:syntastic_javascript_eslint_args = ['--fix']
