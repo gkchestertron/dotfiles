@@ -1,13 +1,13 @@
 #!/bin/bash
 mkdir old_dotfiles
 
-cp -rf ~/.vim old_dotfiles/
-cp ~/.vimrc old_dotfiles/
-cp ~/.bash_profile old_dotfiles/
+mv ~/.vim old_dotfiles/
+mv ~/.vimrc old_dotfiles/
+mv ~/.bash_profile old_dotfiles/
 
-cp -rf .vim ~/
-cp .vimrc ~/
-cp .bash_profile ~/
-cp git-completion.bash ~/
+ln -s "$(pwd)/.vim" "$HOME/.vim"
+ln -s "$(pwd)/.vimrc" "$HOME/.vimrc" 
+ln -s "$(pwd)/.bash_profile" "$HOME/.bash_profile" 
+ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
 
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"

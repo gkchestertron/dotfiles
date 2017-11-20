@@ -199,8 +199,16 @@ then
   }; alias_completion
 fi
 
+# nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# command line stuff
+setxkbmap -option caps:ctrl_modifier
+export VISUAL=vim
+export EDITOR="VISUAL"
+set -o vi
+
 
 source ~/notes/notes
