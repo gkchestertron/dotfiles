@@ -2,6 +2,7 @@ source ~/git-completion.bash
 
 set -o vi
 
+# checkout branch by grep basically
 gk () {
   match="$1"
   index=$2
@@ -11,12 +12,18 @@ gk () {
     return
   fi
 
+  local_matches=(`git branch | sed -E 's/(\* |  )//' | grep $match | sort -u`)
   matches=(`git branch -a | sed -E 's/(\* |  |  remotes\/(origin|upstream)\/)//' | grep $match | sort -u`)
 
   # if master checkout master
   if [ $match = "master" ]
   then
     git checkout master
+
+  # checkout if only one local match
+  elif [ "${#local_matches[@]}" -eq 1 ]
+  then
+    git checkout ${local_matches[0]}
 
   # checkout if only one match
   elif [ "${#matches[@]}" -eq 1 ]
@@ -37,11 +44,13 @@ gk () {
   fi
 }
 
+# reload chrome
 rechrome () {
   osascript -e 'activate application "Google Chrome"'
   osascript -e 'tell application "System Events" to keystroke "r" using {command down}'
 }
 
+# open a node stack trace in vim
 stacktrace () {
   files=""
   paste=`pbpaste`
@@ -61,6 +70,23 @@ stacktrace () {
   vim -c "$cmd"
 }
 
+dev () {
+  tab gogo-dev
+}
+
+tab () {
+  osascript 2>/dev/null <<EOF
+    tell application "System Events"
+      tell process "Terminal" to keystroke "t" using command down
+    end
+    tell application "Terminal"
+      activate
+      do script with command "cd \"$PWD\"; $*" in window 1
+    end tell
+EOF
+}
+
+# open all the changed files in the working tree
 viff () {
   diff=$1
   input=`git diff $diff --name-only`
@@ -74,6 +100,7 @@ viff () {
   vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
 }
 
+# spin up ember server with live dev backend
 live-dev () {
   # default to TYTHON Tunnel server - prob change this when I figure out what it is I do here
   server="0361"
@@ -105,10 +132,66 @@ live-dev () {
   ember s -e live-dev --proxy "https://$server" --secure-proxy=false --port=$port --live-reload-port="$port"1
 }
 
+# serves README or specified file and opens it in the browser
 gread () {
   open "http://localhost:6419"
   grip "$1"
 }
+
+# starts up watchman-processor, sets remote box working dir, and logs into screen session
+gogo-dev () {
+  cdir=$(pwd | sed s/^.*dev\\///)
+  echo starting watchman-processor...
+  echo see ~/.watchman-processor.config.js for details
+  echo
+  watchman-processor &>/dev/null &
+  disown
+
+  echo setting screen windows to match current working dir
+  echo
+  ssh dev -t "screen -x -p local -X stuff '^C cd ~/dev/$cdir \r'"
+  ssh dev -t "screen -x -p live-dev -X stuff '^C cd ~/dev/$cdir \r'"
+  ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
+
+  echo logging into screen session on dev box
+  echo start session on target machine if this fails
+  echo
+  ssh dev -t "screen -x -p local"
+
+  echo killing watchman-processor...
+  pgrep watchman-processor | xargs kill -9
+  exit
+}
+
+# merge in latest master brance (I know mastermerge would be more accurate, but less funny)
+masterbase () {
+  git stash
+  branch=`git branch | grep '*' | awk '{print $(NF)}'`
+  git checkout master
+  git pull
+  git checkout $branch
+  git merge master
+  git stash apply
+}
+
+# Git branch in prompt.
+
+parse_git_branch() {
+  branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'`
+  BPSO=`echo $branch | grep -oE 'BPSO-\d+'`
+
+	if [ -z $branch ]
+  then
+    echo " "
+  elif [ -z $BPSO ]
+  then
+    echo "$branch "
+  else
+    echo " ($BPSO) "
+  fi
+}
+
+export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w\[\033[32m\]\$(parse_git_branch)\[\033[00m\]$ "
 
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
@@ -121,7 +204,6 @@ alias sub='open -a "Sublime Text"'
 alias phpserv='sudo apachectl -d $PWD -k start && open http://localhost'
 alias phpstop='sudo apachectl -d $PWD -k stop'
 alias gdiff='git diff --color=always | less -r'
-alias masterbase='git rebase master'
 alias gethead='git checkout master; git svn rebase;'
 alias pushup='git svn dcommit --dry-run; git svn dcommit'
 alias rename='git branch -m'
@@ -199,16 +281,8 @@ then
   }; alias_completion
 fi
 
-# nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# command line stuff
-setxkbmap -option caps:ctrl_modifier
-export VISUAL=vim
-export EDITOR="VISUAL"
-set -o vi
-
 
 source ~/notes/notes

@@ -11,3 +11,4 @@ ln -s "$(pwd)/.bash_profile" "$HOME/.bash_profile"
 ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
 
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global credential.helper cache
