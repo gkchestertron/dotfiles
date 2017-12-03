@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# skyClutch aliases and scripts
+alias mongostage="mongo apigorilla.com/sky -u $CLUTCH_USERNAME -p $CLUTCH_PASSWORD"
+alias mongotest="mongo apiguerrilla.com/sky -u $CLUTCH_USERNAME -p $CLUTCH_PASSWORD"
+alias mongoprod="mongo skyclutch.com/sky -u $CLUTCH_USERNAME -p $CLUTCH_PASSWORD"
+alias clutch="cd ~/api_gorilla"

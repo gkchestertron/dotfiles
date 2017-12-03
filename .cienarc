@@ -1,0 +1,76 @@
+#!/bin/bash
+
+dev () {
+  tab gogo-dev
+}
+
+tab () {
+  osascript 2>/dev/null <<EOF
+    tell application "System Events"
+      tell process "Terminal" to keystroke "t" using command down
+    end
+    tell application "Terminal"
+      activate
+      do script with command "cd \"$PWD\"; $*" in window 1
+    end tell
+EOF
+}
+
+# spin up ember server with live dev backend
+live-dev () {
+  # default to TYTHON Tunnel server - prob change this when I figure out what it is I do here
+  server="0361"
+  port="$2"
+
+  # use first arg if given
+  if [ ! -z "$1" ]
+  then
+    server="$1"
+
+  # use env var if not empty
+  elif [ ! -z $BP_HOSTNAME ]
+  then
+    server="$BP_HOSTNAME"
+  fi
+
+  # if we just passed a num assume normal test server format
+  if [ ${#server} -le 4 ]
+  then
+    server="onxv$server.ott.ciena.com"
+  fi
+
+  # serve it up with live dev back end
+  if [ -z $port ]
+  then
+    port="4300"
+  fi
+
+  ember s -e live-dev --proxy "https://$server" --secure-proxy=false --port=$port --live-reload-port="$port"1
+}
+
+# starts up watchman-processor, sets remote box working dir, and logs into screen session
+gogo-dev () {
+  cdir=$(pwd | sed s/^.*dev\\///)
+  echo starting watchman-processor...
+  echo see ~/.watchman-processor.config.js for details
+  echo
+  watchman-processor &>/dev/null &
+  disown
+
+  echo setting screen windows to match current working dir
+  echo
+  ssh dev -t "screen -x -p local -X stuff '^C cd ~/dev/$cdir \r'"
+  ssh dev -t "screen -x -p live-dev -X stuff '^C cd ~/dev/$cdir \r'"
+  ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
+
+  echo logging into screen session on dev box
+  echo start session on target machine if this fails
+  echo
+  ssh dev -t "screen -x -p local"
+
+  echo killing watchman-processor...
+  pgrep watchman-processor | xargs kill -9
+  exit
+}
+
+alias work='cd ~/dev/'

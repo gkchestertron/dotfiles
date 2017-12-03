@@ -3,12 +3,21 @@ mkdir old_dotfiles
 
 mv ~/.vim old_dotfiles/
 mv ~/.vimrc old_dotfiles/
+mv ~/.cienarc old_dotfiles/
+mv ~/.avrsrc old_dotfiles/
+mv ~/.clutchrc old_dotfiles/
 mv ~/.bash_profile old_dotfiles/
 
 ln -s "$(pwd)/.vim" "$HOME/.vim"
 ln -s "$(pwd)/.vimrc" "$HOME/.vimrc" 
+ln -s "$(pwd)/.avrsrc" "$HOME/.avrsrc" 
+ln -s "$(pwd)/.clutchrc" "$HOME/.clutchrc" 
+ln -s "$(pwd)/.cienarc" "$HOME/.cienarc" 
 ln -s "$(pwd)/.bash_profile" "$HOME/.bash_profile" 
 ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
 
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 git config --global credential.helper cache
+
+cp -n .rcconfig ~/
+echo please set any usernames and passwords used in your specific configurations in ~/.rcconfig

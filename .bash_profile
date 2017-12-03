@@ -1,7 +1,5 @@
 source ~/git-completion.bash
 
-set -o vi
-
 # checkout branch by grep basically
 gk () {
   match="$1"
@@ -70,22 +68,6 @@ stacktrace () {
   vim -c "$cmd"
 }
 
-dev () {
-  tab gogo-dev
-}
-
-tab () {
-  osascript 2>/dev/null <<EOF
-    tell application "System Events"
-      tell process "Terminal" to keystroke "t" using command down
-    end
-    tell application "Terminal"
-      activate
-      do script with command "cd \"$PWD\"; $*" in window 1
-    end tell
-EOF
-}
-
 # open all the changed files in the working tree
 viff () {
   diff=$1
@@ -100,67 +82,10 @@ viff () {
   vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
 }
 
-# spin up ember server with live dev backend
-live-dev () {
-  # default to TYTHON Tunnel server - prob change this when I figure out what it is I do here
-  server="0361"
-  port="$2"
-
-  # use first arg if given
-  if [ ! -z "$1" ]
-  then
-    server="$1"
-
-  # use env var if not empty
-  elif [ ! -z $BP_HOSTNAME ]
-  then
-    server="$BP_HOSTNAME"
-  fi
-
-  # if we just passed a num assume normal test server format
-  if [ ${#server} -le 4 ]
-  then
-    server="onxv$server.ott.ciena.com"
-  fi
-
-  # serve it up with live dev back end
-  if [ -z $port ]
-  then
-    port="4300"
-  fi
-
-  ember s -e live-dev --proxy "https://$server" --secure-proxy=false --port=$port --live-reload-port="$port"1
-}
-
 # serves README or specified file and opens it in the browser
 gread () {
   open "http://localhost:6419"
   grip "$1"
-}
-
-# starts up watchman-processor, sets remote box working dir, and logs into screen session
-gogo-dev () {
-  cdir=$(pwd | sed s/^.*dev\\///)
-  echo starting watchman-processor...
-  echo see ~/.watchman-processor.config.js for details
-  echo
-  watchman-processor &>/dev/null &
-  disown
-
-  echo setting screen windows to match current working dir
-  echo
-  ssh dev -t "screen -x -p local -X stuff '^C cd ~/dev/$cdir \r'"
-  ssh dev -t "screen -x -p live-dev -X stuff '^C cd ~/dev/$cdir \r'"
-  ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
-
-  echo logging into screen session on dev box
-  echo start session on target machine if this fails
-  echo
-  ssh dev -t "screen -x -p local"
-
-  echo killing watchman-processor...
-  pgrep watchman-processor | xargs kill -9
-  exit
 }
 
 # merge in latest master brance (I know mastermerge would be more accurate, but less funny)
@@ -174,10 +99,24 @@ masterbase () {
   git stash apply
 }
 
+pyserv () {
+  if [ ! -z "$1" ]
+  then
+    PORT=$1
+  else
+    PORT=8000
+  fi
+
+  echo $PORT
+  echo "http://localhost:$PORT"
+
+  python -m SimpleHTTPServer $PORT & open "http://localhost:$PORT"
+}
+
 # Git branch in prompt.
 
 parse_git_branch() {
-  branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'`
+  branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
   BPSO=`echo $branch | grep -oE 'BPSO-\d+'`
 
 	if [ -z $branch ]
@@ -185,41 +124,25 @@ parse_git_branch() {
     echo " "
   elif [ -z $BPSO ]
   then
-    echo "$branch "
+    echo "$branch"
   else
-    echo " ($BPSO) "
+    echo "($BPSO)"
   fi
 }
 
-export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w\[\033[32m\]\$(parse_git_branch)\[\033[00m\]$ "
+export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
 
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
 alias woodshop='cd ~/woodshop/'
-alias work='cd ~/dev/'
 alias mycom='sudo /Library/StartupItems/MySQLCOM/MySQLCOM'
-alias mampdocs='cd /Applications/MAMP/htdocs/'
-alias pyserv='python -m SimpleHTTPServer & open http://localhost:8000'
 alias sub='open -a "Sublime Text"'
 alias phpserv='sudo apachectl -d $PWD -k start && open http://localhost'
 alias phpstop='sudo apachectl -d $PWD -k stop'
-alias gdiff='git diff --color=always | less -r'
-alias gethead='git checkout master; git svn rebase;'
-alias pushup='git svn dcommit --dry-run; git svn dcommit'
-alias rename='git branch -m'
-alias branch='clear; git branch -vv'
-alias master='git checkout master'
 alias status='clear; git branch -vv; git status'
-alias czk='git checkout'
-alias track='git branch --set-upstream-to'
+alias gdiff='git diff --color=always | less -r'
 alias commit='git add -A; git commit'
 alias commend='git add -A; git commit --amend'
-alias herokify='git push heroku'
-alias glog='git lg'
-# git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias hdiff='clear; git diff HEAD^ HEAD --color-words'
-alias ipad='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone\ Simulator.app/Contents/MacOS/iPhone\ Simulator -SimulateApplication /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/Applications/MobileSafari.app/MobileSafari'
-alias vimw='cd ~/git/webapp; vim -c NJ -c TNT -c TNL -c TNI -c TNA -c tabn'
 alias nerd='vim -c Nerd'
 export TERM='xterm-256color'
 
@@ -281,8 +204,23 @@ then
   }; alias_completion
 fi
 
+if [ "$platform" = "Linux" ]
+then
+  setxkbmap -option caps:ctrl_modifier
+fi
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export CLUTCH_ENV=test
+set -o vi
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 source ~/notes/notes
+
+source ~/.rcconfig
+source ~/.avrsrc
+source ~/.cienarc
+source ~/.clutchrc
