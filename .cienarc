@@ -73,6 +73,14 @@ gogo-dev () {
   exit
 }
 
+fresh-dev () {
+  rimraf node_modules
+  sleep 2
+  npm install
+  sleep 2
+  bower install
+}
+
+alias fresh-dev-local='fresh-dev && sleep 1 && ember serve'
+alias fresh-dev-live='fresh-dev && sleep 1 && ember live-dev'
 alias work='cd ~/dev/'
-alias fresh-dev='rimraf node_modules; npm install && bower install && ember serve'
-alias fresh-dev-live='rimraf node_modules; npm install && bower install && live-dev'
