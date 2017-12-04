@@ -74,3 +74,5 @@ gogo-dev () {
 }
 
 alias work='cd ~/dev/'
+alias fresh-dev='rimraf node_modules; npm install && bower install && ember serve'
+alias fresh-dev-live='rimraf node_modules; npm install && bower install && live-dev'
