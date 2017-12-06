@@ -59,6 +59,7 @@ gogo-dev () {
 
   echo setting screen windows to match current working dir, running tests
   echo
+  ssh dev -t "screen -x -p tests -X stuff ' source ~/.bash_profile; sleep 5 \r'"
   ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
 
   echo logging into screen session on dev box
