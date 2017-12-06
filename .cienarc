@@ -57,30 +57,30 @@ gogo-dev () {
   watchman-processor &>/dev/null &
   disown
 
-  echo setting screen windows to match current working dir
+  echo setting screen windows to match current working dir, running tests, and spinning up local server
   echo
-  ssh dev -t "screen -x -p local -X stuff '^C cd ~/dev/$cdir \r'"
-  ssh dev -t "screen -x -p live-dev -X stuff '^C cd ~/dev/$cdir \r'"
-  ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
+  ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
+  ssh dev -t "screen -x -p server -X stuff '^C cd ~/dev/$cdir && ember serve \r'"
 
   echo logging into screen session on dev box
   echo start session on target machine if this fails
   echo
-  ssh dev -t "screen -x -p local"
+  ssh dev -t "screen -x -p server"
 
   echo killing watchman-processor...
   pgrep watchman-processor | xargs kill -9
   exit
 }
 
-fresh-dev () {
-  rimraf node_modules
+nombom () {
+  bower cache clean 
+  rimraf node_modules bower_components dist tmp bower_components
   sleep 2
   npm install
   sleep 2
   bower install
 }
 
-alias fresh-dev-local='fresh-dev && sleep 1 && ember serve'
-alias fresh-dev-live='fresh-dev && sleep 1 && ember live-dev'
+alias fresh-dev-local='nombom && sleep 1 && ember serve'
+alias fresh-dev-live='nombom && sleep 1 && ember live-dev'
 alias work='cd ~/dev/'
