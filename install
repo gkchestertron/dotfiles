@@ -12,7 +12,7 @@ mv ~/.bash_profilerc old_dotfiles/
 
 # create a bash profile that pulls from repo
 echo 'cur_dir=$(pwd)' > .bash_profile
-echo "cd $(pwd); git pull;" >> .bash_profile
+echo "cd $(pwd); echo pulling dotfiles...; git pull;" >> .bash_profile
 echo 'cd $cur_dir; source ~/.bash_profilerc' >> .bash_profile
 
 # symlink files
