@@ -59,17 +59,21 @@ gogo-dev () {
 
   echo setting screen windows to match current working dir, running tests
   echo
-  # ssh dev -t "screen -x -p tests -X stuff 'source ~/.bash_profile && sleep 5 \r'"
+  ssh dev -t "screen -x -p tests -X stuff 'source ~/.bash_profile && sleep 5 \r'"
   if [ -z "$1" ]
   then
-    echo "number one is $1"
-    # ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
+    ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
   elif [ "$1" = "notest" ]
   then
-    echo "notest number one is $1"
-    # ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
+    ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
   else
+    echo
     echo "option \"$1\" not recognized, please try again naked or with \"notest\""
+    echo
+    echo killing watchman-processor...
+    sleep 5
+    pgrep watchman-processor | xargs kill -9
+    exit
   fi
 
 
