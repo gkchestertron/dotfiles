@@ -57,15 +57,14 @@ gogo-dev () {
   watchman-processor &>/dev/null &
   disown
 
-  echo setting screen windows to match current working dir, running tests, and spinning up local server
+  echo setting screen windows to match current working dir, running tests
   echo
   ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
-  ssh dev -t "screen -x -p server -X stuff '^C cd ~/dev/$cdir && ember serve \r'"
 
   echo logging into screen session on dev box
   echo start session on target machine if this fails
   echo
-  ssh dev -t "screen -x -p server"
+  ssh dev -t "screen -x -p tests"
 
   echo killing watchman-processor...
   pgrep watchman-processor | xargs kill -9

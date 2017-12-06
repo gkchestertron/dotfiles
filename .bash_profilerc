@@ -1,10 +1,55 @@
+#!/bin/bash
 source ~/git-completion.bash
 
+# checkout branch by grep basically
+gk () {
+  match="$1"
+  index=$2
+  if [ -z $match ]
+  then
+    echo please provide a string to match for branch checkout - also pass index if multiple exist
+    return
+  fi
+
+  local_matches=(`git branch | sed -E 's/(\* |  )//' | grep $match | sort -u`)
+  matches=(`git branch -a | sed -E 's/(\* |  |  remotes\/(origin|upstream)\/)//' | grep $match | sort -u`)
+
+  # if master checkout master
+  if [ $match = "master" ]
+  then
+    git checkout master
+
+  # checkout if only one local match
+  elif [ "${#local_matches[@]}" -eq 1 ]
+  then
+    git checkout ${local_matches[0]}
+
+  # checkout if only one match
+  elif [ "${#matches[@]}" -eq 1 ]
+  then
+    git checkout ${matches[0]}
+
+  # checkout by index if given
+  elif [ ! -z "$index" ]
+  then
+    git checkout ${matches[$index]}
+
+  # else 
+  else
+    for ((i=0; i<${#matches[@]};i++))
+    do
+      echo ${matches[$i]}
+    done
+  fi
+}
+
+# reload chrome
 rechrome () {
   osascript -e 'activate application "Google Chrome"'
   osascript -e 'tell application "System Events" to keystroke "r" using {command down}'
 }
 
+# open a node stack trace in vim
 stacktrace () {
   files=""
   paste=`pbpaste`
@@ -24,6 +69,7 @@ stacktrace () {
   vim -c "$cmd"
 }
 
+# open all the changed files in the working tree
 viff () {
   diff=$1
   input=`git diff $diff --name-only`
@@ -37,90 +83,21 @@ viff () {
   vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
 }
 
-clean() {
-  trap SIGINT
-  stop_show=true
-  gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png
-  reset
+# serves README or specified file and opens it in the browser
+gread () {
+  open "http://localhost:6419"
+  grip "$1"
 }
 
-
-cleangif() {
-  killall animate > /dev/null
-  animate /home/dobby/Pictures/black.png -window $dirty_win > /dev/null &
-  sleep 1
-  killall animate > /dev/null
-  sleep 1
-  clean
-}
-
-dirty(){
-  local DIR="/home/dobby/woodshop/.w"
-  local PIC=$(ls $DIR/* | grep -Ev 'gif' | shuf -n1)
-  gsettings set org.gnome.desktop.background picture-uri "file://$PIC"
-  clear
-}
-
-dirtslide(){
-
-  if [ -z "$1" ]
-  then
-    interval=10
-  else
-    interval=$1
-  fi
-
-  while true
-  do
-    if [ -z "$2" ]
-    then
-      dirty
-    else
-      dirtygif
-    fi
-
-    sleep $interval
-  done
-}
-
-dirtygif(){
-  killall animate
-  gsettings set org.gnome.desktop.background picture-uri "file:///home/dobby/Pictures/black.png"
-  if [ -z "$dirty_win" ]
-  then
-    export dirty_win=`xwininfo | grep id: | awk '{print $(4)}'`
-  fi
-  local DIR="/home/dobby/woodshop/.w"
-  local PIC=$(ls $DIR/*.gif | shuf -n1)
-  animate $PIC -window $dirty_win -background black &
-  clear
-}
-
-cur_pic () {
-  local pic=$(gsettings get org.gnome.desktop.background picture-uri | sed -E "s/file:\/\///" | sed -E "s/'//g")
-  echo $pic
-}
-
-dirtscape () {
-  local pic=$(gsettings get org.gnome.desktop.background picture-uri | sed -E "s/file:\/\///" | sed -E "s/'//g")
-  convert $pic -background black -splice 120%x0 "$pic"_l
-  gsettings set org.gnome.desktop.background picture-uri "file://$pic"_l
-  if [ ! -z "$1" ]
-  then
-    rm $pic
-  fi
-}
-
-clean_del () {
-  local pic=$(gsettings get org.gnome.desktop.background picture-uri | sed -E "s/file:\/\///" | sed -E "s/'//g")
-  echo removing $pic
-  rm $pic
-  clean
-}
-
-clean_all () {
-  clean
-  rm -rf /home/dobby/woodshop/.w/
+# merge in latest master brance (I know mastermerge would be more accurate, but less funny)
+masterbase () {
+  git stash
+  branch=`git branch | grep '*' | awk '{print $(NF)}'`
+  git checkout master
+  git pull
+  git checkout $branch
+  git merge master
+  git stash apply
 }
 
 pyserv () {
@@ -137,39 +114,36 @@ pyserv () {
   python -m SimpleHTTPServer $PORT & open "http://localhost:$PORT"
 }
 
-alias mongostage='mongo apigorilla.com/sky -u rider -p makeitsoawesome1983'
-alias mongotest='mongo apiguerrilla.com/sky -u rider -p makeitsoawesome1983'
-alias mongoprod='mongo skyclutch.com/sky -u rider -p makeitsoawesome1983'
-alias bestcohort='ssh test -t screen -r'
-alias clutch='cd ~/api_gorilla//'
-alias stageclutch='export CLUTCH_ENV=stage'
-alias localclutch='export CLUTCH_ENV=local'
+# Git branch in prompt.
+
+parse_git_branch() {
+  branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
+  BPSO=`echo $branch | grep -oE 'BPSO-\d+'`
+
+	if [ -z $branch ]
+  then
+    echo " "
+  elif [ -z $BPSO ]
+  then
+    echo "$branch"
+  else
+    echo "($BPSO)"
+  fi
+}
+
+export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
+
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
 alias woodshop='cd ~/woodshop/'
 alias mycom='sudo /Library/StartupItems/MySQLCOM/MySQLCOM'
-alias mampdocs='cd /Applications/MAMP/htdocs/'
 alias sub='open -a "Sublime Text"'
 alias phpserv='sudo apachectl -d $PWD -k start && open http://localhost'
 alias phpstop='sudo apachectl -d $PWD -k stop'
-alias gdiff='git diff --color=always | less -r'
-alias masterbase='git rebase master'
-alias gethead='git checkout master; git svn rebase;'
-alias pushup='git svn dcommit --dry-run; git svn dcommit'
-alias rename='git branch -m'
-alias branch='clear; git branch -vv'
-alias master='git checkout master'
 alias status='clear; git branch -vv; git status'
-alias czk='git checkout'
-alias track='git branch --set-upstream-to'
+alias gdiff='git diff --color=always | less -r'
 alias commit='git add -A; git commit'
 alias commend='git add -A; git commit --amend'
-alias herokify='git push heroku'
-alias glog='git lg'
-# git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias hdiff='clear; git diff HEAD^ HEAD --color-words'
-alias ipad='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications/iPhone\ Simulator.app/Contents/MacOS/iPhone\ Simulator -SimulateApplication /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/Applications/MobileSafari.app/MobileSafari'
-alias vimw='cd ~/git/webapp; vim -c NJ -c TNT -c TNL -c TNI -c TNA -c tabn'
 alias nerd='vim -c Nerd'
 export TERM='xterm-256color'
 
@@ -231,15 +205,23 @@ then
   }; alias_completion
 fi
 
-setxkbmap -option caps:ctrl_modifier
+if [ "$platform" = "Linux" ]
+then
+  setxkbmap -option caps:ctrl_modifier
+fi
+
 export VISUAL=vim
 export EDITOR="$VISUAL"
 export CLUTCH_ENV=test
 set -o vi
 
-# for keras
-export WORKON_HOME=$HOME/.virtualenvs
-source /usr/local/bin/virtualenvwrapper.sh
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# my notes software
 source ~/notes/notes
+
+source ~/.rcconfig
+source ~/.avrsrc
+source ~/.cienarc
+source ~/.clutchrc

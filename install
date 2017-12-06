@@ -1,23 +1,34 @@
 #!/bin/bash
-mkdir old_dotfiles
 
+# save any old dotfiles
+mkdir old_dotfiles
 mv ~/.vim old_dotfiles/
 mv ~/.vimrc old_dotfiles/
 mv ~/.cienarc old_dotfiles/
 mv ~/.avrsrc old_dotfiles/
 mv ~/.clutchrc old_dotfiles/
 mv ~/.bash_profile old_dotfiles/
+mv ~/.bash_profilerc old_dotfiles/
 
+# create a bash profile that pulls from repo
+echo 'cur_dir=$(pwd)' > .bash_profile
+echo "cd $(pwd); git pull;" >> .bash_profile
+echo 'cd $cur_dir; source ~/.bash_profilerc' >> .bash_profile
+
+# symlink files
 ln -s "$(pwd)/.vim" "$HOME/.vim"
 ln -s "$(pwd)/.vimrc" "$HOME/.vimrc" 
 ln -s "$(pwd)/.avrsrc" "$HOME/.avrsrc" 
 ln -s "$(pwd)/.clutchrc" "$HOME/.clutchrc" 
 ln -s "$(pwd)/.cienarc" "$HOME/.cienarc" 
 ln -s "$(pwd)/.bash_profile" "$HOME/.bash_profile" 
+ln -s "$(pwd)/.bash_profilerc" "$HOME/.bash_profilerc" 
 ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
 
+# set some global things for git
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 git config --global credential.helper cache
 
 cp -n .rcconfig ~/
-echo please set any usernames and passwords used in your specific configurations in ~/.rcconfig
+echo please set any usernames, passwords, or other sensitive info used in your specific configurations in ~/.rcconfig
+echo if you move this folder, you will need to rerun install
