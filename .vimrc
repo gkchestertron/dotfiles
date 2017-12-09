@@ -63,5 +63,6 @@ set fileencoding=utf-8
 setglobal fileencoding=utf-8
 set backspace=indent,eol,start
 
+" eslint - only run fix if not in tests - it rewrites skipped tests
 let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_args = ['--fix']
+autocmd BufWinEnter *.js if expand('%') !~ "test" | let g:syntastic_javascript_eslint_args = ['--fix'] | endif

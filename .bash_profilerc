@@ -146,6 +146,20 @@ masterbase () {
   git stash apply
 }
 
+# open conflicts in vim
+miff () {
+  diff=$1
+  input=`git status | grep 'both modified' | awk '{print $(NF)}'`
+  files=""
+
+  while read -r line
+  do
+    files="$files {\"filename\":\"$line\", \"lnum\":1},"
+  done <<< "$input"
+
+  vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
+}
+
 pyserv () {
   if [ ! -z "$1" ]
   then

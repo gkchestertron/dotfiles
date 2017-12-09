@@ -1,14 +1,16 @@
 snippet licp
 	{{list-item-content-popover
-		elementPrefix=${1:elementPrefix}
-		label=${2}
+		elementPrefix=elementPrefix
+		label='${1}'
+		priority='${2:tertiary}'
 		value=${3}
 	}}
 
-snippet licpl
+snippet licpc
 	{{#list-item-content-popover
-		elementPrefix=${1:elementPrefix}
-		label=${2}
+		elementPrefix=elementPrefix
+		label=${1}
+		priority='${2:tertiary}'
 		value=${3}
 	}}
 		${4}
