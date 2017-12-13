@@ -196,7 +196,10 @@ export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\
 # List files starting with ., but not implied ., .. Don't print group
 # Use custom colors as outlined by LS_COLORS
 alias lsg='ls -AGloh'
-
+# alias for getting top cpu users
+alias psc='ps aux -cr | head'
+# alias for getting top memory users
+alias psm='ps aux -cm | head'
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
 alias woodshop='cd ~/woodshop/'

@@ -62,10 +62,10 @@ gogo-dev () {
   ssh dev -t "screen -x -p tests -X stuff 'source ~/.bash_profile && sleep 5 \r'"
   if [ -z "$1" ]
   then
-    ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
-  elif [ "$1" = "notest" ]
-  then
     ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir \r'"
+  elif [ "$1" = "test" ]
+  then
+    ssh dev -t "screen -x -p tests -X stuff '^C cd ~/dev/$cdir && nombom && ember test \r'"
   else
     echo
     echo "option \"$1\" not recognized, please try again naked or with \"notest\""

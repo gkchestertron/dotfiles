@@ -35,6 +35,7 @@ autocmd BufWinEnter * :set ts=2 | set sw=2 | set expandtab | set softtabstop=2
 autocmd BufWinEnter *.md :set syntax=markdown
 autocmd BufWinEnter *.ejs :set syntax=html
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
+autocmd BufWinEnter *.snippets :set noexpandtab
 set pastetoggle=<F1>
 nnoremap <F2> :set nonumber!<CR>
 nnoremap <F3> :RltvNmbr<CR>
