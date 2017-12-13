@@ -193,6 +193,31 @@ parse_git_branch() {
 
 export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
 
+
+woodshop () {
+  path="$HOME/dev"
+  for i in $@
+  do
+    path="$path/$i"
+  done
+
+  cd $path
+}
+
+_woodshop() 
+{
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  path="$HOME/woodshop/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
+  opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
+
+  COMPREPLY=($(compgen -W "${opts}" ${cur}))
+  return 0
+}
+
+complete -F _woodshop woodshop
+
 # List files starting with ., but not implied ., .. Don't print group
 # Use custom colors as outlined by LS_COLORS
 alias lsg='ls -AGloh'
@@ -202,7 +227,6 @@ alias psc='ps aux -cr | head'
 alias psm='ps aux -cm | head'
 alias postgresser='postgres -D /usr/local/var/postgres'
 alias crosscomp='export PATH="$HOME/opt/cross/bin:$PATH"'
-alias woodshop='cd ~/woodshop/'
 alias mycom='sudo /Library/StartupItems/MySQLCOM/MySQLCOM'
 alias sub='open -a "Sublime Text"'
 alias phpserv='sudo apachectl -d $PWD -k start && open http://localhost'
