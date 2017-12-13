@@ -98,4 +98,31 @@ nombom () {
 
 alias fresh-dev-local='nombom && sleep 1 && ember serve'
 alias fresh-dev-live='nombom && sleep 1 && ember live-dev'
-alias work='cd ~/dev/'
+
+join () {
+  local IFS="$1"; shift; echo "$*";
+}
+
+work () {
+  path="$HOME/dev"
+  for i in $@
+  do
+    path="$path/$i"
+  done
+
+  cd $path
+}
+
+_work() 
+{
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  path="$HOME/dev/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
+  opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
+
+  COMPREPLY=($(compgen -W "${opts}" ${cur}))
+  return 0
+}
+
+complete -F _work work
