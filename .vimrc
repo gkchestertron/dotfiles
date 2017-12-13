@@ -32,7 +32,7 @@ autocmd BufWinEnter * let c = matchadd('ConsoleLog', 'console\.log') | let o = m
 autocmd VimLeavePre * :mksession! ~/vimsessions/last.vim
 autocmd BufWinEnter * :highlight SignColumn ctermbg=black
 autocmd BufWinEnter * :set ts=2 | set sw=2 | set expandtab | set softtabstop=2
-autocmd BufWinEnter *.md :set syntax=markdown
+autocmd BufWinEnter *.md :set syntax=markdown | set spell | set wrap | set linebreak | highlight clear OverLength
 autocmd BufWinEnter *.ejs :set syntax=html
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
 autocmd BufWinEnter *.snippets :set noexpandtab
