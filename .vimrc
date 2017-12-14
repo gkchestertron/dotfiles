@@ -8,6 +8,7 @@ command -nargs=1 SS :mksession! ~/vimsessions/<args>.vim
 command -nargs=1 LS :source ~/vimsessions/<args>.vim | highlight ConsoleLog ctermbg=8 ctermfg=yellow | highlight OverLength ctermbg=17
 command LL :source ~/vimsessions/last.vim | highlight ConsoleLog ctermbg=8 ctermfg=yellow | highlight OverLength ctermbg=17
 command -nargs=1 Find :execute 'grep -r <args> --exclude-dir="node_modules" --exclude-dir="dist" --exclude-dir="bower_components" --exclude-dir="tmp" --exclude-dir="coverage" --exclude-dir="tests" --exclude-dir="mirage" --exclude="DEVELOPMENT-SCENARIOS.md" --exclude="CHANGELOG.md" --exclude="CHANGELOG.md" ./*' | copen
+command -nargs=1 Findd :execute 'grep -r <args> --exclude-dir="node_modules" --exclude-dir="dist" --exclude-dir="bower_components" --exclude-dir="tmp" --exclude-dir="coverage" --exclude-dir="mirage" --exclude="DEVELOPMENT-SCENARIOS.md" --exclude="CHANGELOG.md" --exclude="CHANGELOG.md" ./*' | copen
 set smartindent
 set cindent
 set ai
