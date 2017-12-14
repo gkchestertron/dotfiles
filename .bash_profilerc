@@ -194,8 +194,8 @@ parse_git_branch() {
 export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
 
 
-woodshop () {
-  path="$HOME/woodshop"
+go () {
+  path="$HOME"
   for i in $@
   do
     path="$path/$i"
@@ -204,19 +204,25 @@ woodshop () {
   cd $path
 }
 
-_woodshop() 
+_go() 
 {
   local cur prev opts
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
-  path="$HOME/woodshop/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
-  opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
+  prev="${COMP_WORDS[COMP_CWORD - 1]}"
+  if [ "$prev" = "go" ]
+  then
+    opts="dev woodshop"
+  else
+    path="$HOME/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
+    opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
+  fi
 
   COMPREPLY=($(compgen -W "${opts}" ${cur}))
   return 0
 }
 
-complete -F _woodshop woodshop
+complete -F _go go
 
 # List files starting with ., but not implied ., .. Don't print group
 # Use custom colors as outlined by LS_COLORS
