@@ -27,7 +27,7 @@ ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
 
 # set some global things for git
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-git config --global credential.helper cache
+git config --global credential.helper store
 
 cp -n .rcconfig ~/
 echo please set any usernames, passwords, or other sensitive info used in your specific configurations in ~/.rcconfig

@@ -99,13 +99,13 @@ rechrome () {
 stacktrace () {
   files=""
   paste=`pbpaste`
-  cmd="set statusline=%F | set laststatus=2 | copen | set switchbuf+=usetab,newtab"
+  cmd="set statusline=%F | set laststatus=2 | copen"
   cur_dir="${PWD##*/}"
 
   while read -r line
   do
     file=`echo $line | awk "{gsub(/^.+$cur_dir\//, \"\"); gsub(/:.+$/, \"\")}1"`
-    linenumber=`echo $line | awk '{gsub(/^[^:]+:/, ""); gsub(/:[^:]+$/, "")}1'`
+    linenumber=`echo $line | sed -E 's/^.*:([0-9]+):.*/\1/'`
     col=`echo $line | awk '{gsub(/.+:/, ""); gsub(/[).]*$/, "")}1'`
     files="$files {\"filename\":\"$file\", \"lnum\": $linenumber, \"col\": $col},"
   done <<< "$paste"
@@ -126,7 +126,7 @@ viff () {
     files="$files {\"filename\":\"$line\", \"lnum\":1},"
   done <<< "$input"
 
-  vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
+  vim -c "call setqflist([$files]) | copen"
 }
 
 # serves README or specified file and opens it in the browser
@@ -157,7 +157,7 @@ miff () {
     files="$files {\"filename\":\"$line\", \"lnum\":1},"
   done <<< "$input"
 
-  vim -c "call setqflist([$files]) | copen | set switchbuf+=usetab,newtab"
+  vim -c "call setqflist([$files]) | copen"
 }
 
 pyserv () {
@@ -305,6 +305,8 @@ fi
 if [ "$platform" = "Linux" ]
 then
   setxkbmap -option caps:ctrl_modifier
+  alias pbcopy="xargs echo | xclip -selection c"
+  alias pbpaste="xclip -o"
 fi
 
 export VISUAL=vim
