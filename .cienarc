@@ -96,8 +96,19 @@ nombom () {
   bower install
 }
 
-alias fresh-dev-local='nombom && sleep 1 && ember serve'
-alias fresh-dev-live='nombom && sleep 1 && ember live-dev'
+fresh-dev () {
+  cmd=""
+
+  if [ "$1" = "local" ]
+  then
+    cmd="ember serve"
+  elif [ "$1" = "live" ]
+  then
+    cmd="live-dev"
+  fi
+
+  nombom && sleep 1 && $cmd $2 $3
+}
 
 join () {
   local IFS="$1"; shift; echo "$*";
