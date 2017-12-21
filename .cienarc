@@ -110,6 +110,15 @@ fresh-dev () {
   nombom && sleep 1 && $cmd $2 $3
 }
 
+_fresh-dev () {
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  opts="local live"
+  COMPREPLY=($(compgen -W "${opts}" ${cur}))
+  return 0
+}
+
+complete -F _fresh-dev fresh-dev
+
 join () {
   local IFS="$1"; shift; echo "$*";
 }
