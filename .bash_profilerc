@@ -137,13 +137,23 @@ gread () {
 
 # merge in latest master brance (I know mastermerge would be more accurate, but less funny)
 masterbase () {
-  git stash
+  dirty=$(git diff)
   branch=`git branch | grep '*' | awk '{print $(NF)}'`
+
+  if [ ! -z "$dirty" ]
+  then
+    git stash
+  fi
+
   git checkout master
   git pull
   git checkout $branch
   git merge master
-  git stash apply
+
+  if [ ! -z "$dirty" ]
+  then
+    git stash apply
+  fi
 }
 
 # open conflicts in vim
