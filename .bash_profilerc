@@ -139,17 +139,30 @@ gread () {
 masterbase () {
   dirty=$(git diff)
   branch=`git branch | grep '*' | awk '{print $(NF)}'`
+  upstream=`git remote show | grep upstream`
 
+  # stash if we need to
   if [ ! -z "$dirty" ]
   then
     git stash
   fi
 
+  # get master
   git checkout master
   git pull
+
+  # fetch and merge upstream if we have it
+  if [ ! -z "$upstream" ]
+  then
+    git fetch upstream
+    git merge upstream/master
+  fi
+
+  # merge master
   git checkout $branch
   git merge master
 
+  # re-apply stash if necessary
   if [ ! -z "$dirty" ]
   then
     git stash apply
