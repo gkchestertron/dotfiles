@@ -1,4 +1,5 @@
 execute pathogen#infect()
+let g:rainbow_active = 1
 colorscheme desert
 noremap ; :
 command Nerd :NERDTree
@@ -15,15 +16,10 @@ set ai
 set ic
 set aw
 set nu
-set cursorline
 set incsearch
 syntax on
 filetype indent plugin on
 set runtimepath^=~/.vim/bundle/ctrlp.vim
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
 nmap - :res<CR>:vertical res<CR>$
 highlight ConsoleLog ctermbg=8 ctermfg=yellow
 let c = matchadd('ConsoleLog', 'console\.log')
@@ -33,7 +29,8 @@ autocmd BufWinEnter * let c = matchadd('ConsoleLog', 'console\.log') | let o = m
 autocmd VimLeavePre * :mksession! ~/vimsessions/last.vim
 autocmd BufWinEnter * :highlight SignColumn ctermbg=black
 autocmd BufWinEnter * :set ts=2 | set sw=2 | set expandtab | set softtabstop=2
-autocmd BufWinEnter *.md :set syntax=markdown | set wrap | set linebreak | highlight clear OverLength
+autocmd BufWinEnter * :set nocursorline
+autocmd BufWinEnter *.md :set syntax=markdown | set wrap | set linebreak | highlight clear OverLength | set spell
 autocmd BufWinEnter *.ejs :set syntax=html
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
 autocmd BufWinEnter *.snippets :set noexpandtab
@@ -68,3 +65,4 @@ set backspace=indent,eol,start
 " eslint - only run fix if not in tests - it rewrites skipped tests
 let g:syntastic_javascript_checkers=['eslint']
 autocmd BufWinEnter *.js if expand('%') !~ "test" | let g:syntastic_javascript_eslint_args = ['--fix'] | endif
+let g:javascript_plugin_jsdoc = 1

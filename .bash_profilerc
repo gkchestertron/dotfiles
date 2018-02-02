@@ -89,6 +89,22 @@ gk () {
   fi
 }
 
+_gk () {
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  if [ -z "$cur" ]
+  then
+    opts="$(git branch | sed 's/\*//')"
+  else
+    opts="$(git branch | sed 's/\*//' | grep $cur)"
+  fi
+  COMPREPLY=($(compgen -W "${opts}" ${cur}))
+  return 0
+}
+
+complete -F _gk gk
+
 # reload chrome
 rechrome () {
   osascript -e 'activate application "Google Chrome"'
@@ -118,7 +134,7 @@ stacktrace () {
 # open all the changed files in the working tree
 viff () {
   diff=$1
-  input=`git diff $diff --name-only`
+  input="`git diff $diff --name-only` `git diff $diff --name-only --cached`"
   files=""
 
   while read -r line
