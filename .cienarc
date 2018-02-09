@@ -54,7 +54,7 @@ gogo-dev () {
   echo starting watchman-processor...
   echo see ~/.watchman-processor.config.js for details
   echo
-  watchman-processor &>/dev/null &
+  watchman-processor &>/tmp/watchman-processor.log &
   disown
 
   echo setting screen windows to match current working dir, running tests
