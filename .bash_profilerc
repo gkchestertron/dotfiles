@@ -344,7 +344,7 @@ fi
 if [ "$platform" = "Linux" ]
 then
   setxkbmap -option caps:ctrl_modifier
-  alias pbcopy="xargs echo | xclip -selection c"
+  alias pbcopy="xclip -selection clipboard"
   alias pbpaste="xclip -o"
 fi
 

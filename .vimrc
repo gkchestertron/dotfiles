@@ -15,6 +15,7 @@ command -nargs=1 Find :execute 'grep -r <args> --exclude-dir="node_modules" --ex
 command -nargs=1 Findd :execute 'grep -r <args> --exclude-dir="node_modules" --exclude-dir="dist" --exclude-dir="bower_components" --exclude-dir="tmp" --exclude-dir="coverage" --exclude-dir="mirage" --exclude="DEVELOPMENT-SCENARIOS.md" --exclude="CHANGELOG.md" --exclude="CHANGELOG.md" ./*' | copen
 
 " set options and env vars
+set shellcmdflag=-ic
 set smartindent
 set cindent
 set ai
