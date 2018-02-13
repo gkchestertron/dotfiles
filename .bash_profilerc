@@ -97,7 +97,7 @@ _gk () {
   then
     opts="$(git branch | sed 's/\*//')"
   else
-    opts="$(git branch | sed 's/\*//' | grep $cur)"
+    opts="$(git branch | sed 's/\*//' | grep -Eo "$cur.*$" )"
   fi
   COMPREPLY=($(compgen -W "${opts}" ${cur}))
   return 0
