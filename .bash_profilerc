@@ -260,6 +260,7 @@ _gogo()
   COMPREPLY=($(compgen -W "${opts}" ${cur}))
   return 0
 }
+complete -F _gogo gogo
 
 # read from stdin or passed in list of filenames and open in vim
 viml () {
@@ -339,8 +340,6 @@ viml () {
     vim - -c "$cmd"
   fi
 }
-
-complete -F _gogo gogo
 
 # List files starting with ., but not implied ., .. Don't print group
 # Use custom colors as outlined by LS_COLORS

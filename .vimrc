@@ -51,6 +51,7 @@ autocmd BufWinEnter *.md :set syntax=markdown | set wrap | set linebreak | highl
 autocmd BufWinEnter *.ejs :set syntax=html
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
 autocmd BufWinEnter *.snippets :set noexpandtab
+autocmd BufWinEnter *.go :set noexpandtab
 
 " key mappings
 noremap ; :
@@ -72,8 +73,8 @@ nmap <Left> <<
 nmap <Right> >>
 vmap <Left> <gv
 vmap <Right> >gv
-nmap <Up> [e
-nmap <Down> ]e
+" nmap <Up> [e
+" nmap <Down> ]e
 vmap <Up> [egv
 vmap <Down> ]egv
 
