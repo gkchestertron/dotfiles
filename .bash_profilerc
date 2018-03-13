@@ -423,7 +423,7 @@ if [ "$platform" = "Linux" ]
 then
   setxkbmap -option caps:ctrl_modifier
   alias pbcopy="xclip -selection clipboard"
-  alias pbpaste="xclip -o"
+  alias pbpaste="xclip -o -selection clipboard"
 fi
 
 export VISUAL=vim
