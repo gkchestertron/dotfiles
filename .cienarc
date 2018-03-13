@@ -1,7 +1,22 @@
 #!/bin/bash
 
+rmsvgtitles () {
+  a=( $(find . -type f -name '*.svg' | grep -v node_modules | xargs grep -l title) )
+  for file in ${a[@]}
+  do
+    # remove titles
+    sed -i bck 's/<title>.*<\/title>//' $file
+    # remove blank lines
+    sed -i bck2 '/^\s*$/d' $file
+    # delete backup files
+    rm $file'bck'
+    rm $file'bck2'
+  done
+}
+
 dev () {
   tab gogo-dev $1
+  less +F /tmp/watchman-processor.log
 }
 
 tab () {

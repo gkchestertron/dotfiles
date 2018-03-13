@@ -233,7 +233,7 @@ parse_git_branch() {
 export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
 
 
-go () {
+gogo () {
   path="$HOME"
   for i in $@
   do
@@ -243,7 +243,7 @@ go () {
   cd $path
 }
 
-_go() 
+_gogo() 
 {
   local cur prev opts
   COMPREPLY=()
@@ -261,7 +261,86 @@ _go()
   return 0
 }
 
-complete -F _go go
+# read from stdin or passed in list of filenames and open in vim
+viml () {
+  # set some options
+  cmd="set modifiable | set statusline=%F | set laststatus=2 | copen"
+  qflist=""
+
+  # if we've been passed args (stdin is empty)
+  if [ -t 0 ]
+  then
+    for file in "$@"
+    do
+      # add current working dir to relative paths
+      if [ -z $(echo "$file" | grep "^\/") ]
+      then
+        file="$(pwd)/$file"
+      fi
+
+      # linenumber
+      nums=( $(echo "$file" | grep -o ':[0-9][0-9]*' | sed 's/://g') )
+      lnum=${nums[0]}
+      cnum=${nums[1]}
+      if [ -z "$cnum" ]
+      then
+        cnum=1
+      fi
+
+      if [ -z "$lnum" ]
+      then
+        lnum=1
+      fi
+
+      # strip extras from file
+      file=$(echo $file | sed 's/:.*$//')
+
+      # add to quickfix list for vim
+      qflist="$qflist {\"filename\":\"$file\", \"lnum\": $lnum, \"col\": $cnum},"
+    done
+
+    # set command and open quickfix list in vim
+    cmd="call setqflist([$qflist]) | $cmd"
+    vim -c "$cmd"
+
+  # if we're taking stdin
+  else
+    while read file
+    do
+      # add current working dir to relative paths
+      if [ -z $(echo "$file" | grep "^\/") ]
+      then
+        file="$(pwd)/$file"
+      fi
+
+      # linenumber
+      nums=( $(echo "$file" | grep -o ':[0-9][0-9]*' | sed 's/://g') )
+      lnum=${nums[0]}
+      cnum=${nums[1]}
+      if [ -z "$cnum" ]
+      then
+        cnum=1
+      fi
+
+      if [ -z "$lnum" ]
+      then
+        lnum=1
+      fi
+
+      # strip extras from file
+      file=$(echo $file | sed 's/:.*$//')
+
+      # add to quickfix list for vim
+      qflist="$qflist {\"filename\":\"$file\", \"lnum\": $lnum, \"col\": $cnum},"
+    done
+
+    # set command and open quickfix list in vim (passing - to let vim know we're coming from stdin)
+    cmd="call setqflist([$qflist]) | $cmd"
+    vim - -c "$cmd"
+  fi
+}
+
+complete -F _gogo gogo
 
 # List files starting with ., but not implied ., .. Don't print group
 # Use custom colors as outlined by LS_COLORS
