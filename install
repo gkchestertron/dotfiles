@@ -5,7 +5,7 @@ echo '" set path for .vim folder' > .vimrc
 echo "set rtp^=$(pwd)/.vim" >> .vimrc
 cat .vimrc_template >> .vimrc
 
-cat >> .bash_profile <<HERE
+cat >> ~/.bash_profile <<HERE
 jff(){
   source $(pwd)/.jff
 }

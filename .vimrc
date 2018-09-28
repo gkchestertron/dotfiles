@@ -1,4 +1,5 @@
-set rtp^=/Users/johnfellman/woodshop/dotfiles/.vim
+" set path for .vim folder
+set rtp^=/home/ubuntu/dotfiles/.vim
 
 " basic setup - plugins, color scheme
 execute pathogen#infect()
