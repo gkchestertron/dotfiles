@@ -1,4 +1,3 @@
-set rtp^=/Users/johnfellman/woodshop/dotfiles/.vim
 
 " basic setup - plugins, color scheme
 execute pathogen#infect()

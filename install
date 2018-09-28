@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# save any old dotfiles
-mkdir old_dotfiles
-mv ~/.vim old_dotfiles/
-mv ~/.vimrc old_dotfiles/
+# create a new vimrc
+echo '" set path for .vim folder' > .vimrc
+echo "set rtp^=$(pwd)/.vim" >> .vimrc
+cat .vimrc_template >> .vimrc
 
-# symlink files
-ln -s "$(pwd)/.vim" "$HOME/.vim"
-ln -s "$(pwd)/.vimrc" "$HOME/.vimrc" 
+cat >> .bash_profile <<HERE
+jff(){
+  source $(pwd)/.jff
+}
+HERE

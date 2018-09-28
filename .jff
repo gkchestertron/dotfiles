@@ -1,6 +1,12 @@
 export VISUAL=vim
 export EDITOR="$VISUAL"
+export MYVIMRC=/tmp/.vimrc
+export TERM='xterm-256color'
 set -o vi
+
+if [ "$platform" = "Linux" ]; then
+  setxkbmap -option caps:ctrl_modifier
+fi
 
 alias nerd='vim -c Nerd'
 alias lsg='ls -AGloh'
@@ -118,3 +124,17 @@ parse_git_branch() {
 }
 
 export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
+
+pyserv () {
+  if [ ! -z "$1" ]
+  then
+    PORT=$1
+  else
+    PORT=8000
+  fi
+
+  echo $PORT
+  echo "http://localhost:$PORT"
+
+  python -m SimpleHTTPServer $PORT & open "http://localhost:$PORT"
+}
