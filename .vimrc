@@ -30,6 +30,11 @@ set backspace=indent,eol,start
 syntax on
 filetype indent plugin on
 set runtimepath^=~/.vim/bundle/ctrlp.vim
+set foldmethod=syntax
+set foldlevel=10
+
+" for react-scripts watching
+set backupcopy=yes
 
 " special highlighting for console logs and overlength
 highlight ConsoleLog ctermbg=8 ctermfg=yellow
@@ -50,8 +55,10 @@ autocmd BufWinEnter * :set nocursorline
 autocmd BufWinEnter *.md :set syntax=markdown | set wrap | set linebreak | highlight clear OverLength
 autocmd BufWinEnter *.ejs :set syntax=html
 autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=4
+autocmd BufWinEnter *.go :set tabstop=2 softtabstop=2 shiftwidth=2 noexpandtab
 autocmd BufWinEnter *.snippets :set noexpandtab
-autocmd BufWinEnter *.go :set noexpandtab
+autocmd BufWinEnter *.graphql :set binary | set noeol
+autocmd BufWinEnter *.png,*.jpg,*.gif,*.ico exec "! ~/.iterm2/imgcat ".expand("%") | :bw
 
 " key mappings
 noremap ; :

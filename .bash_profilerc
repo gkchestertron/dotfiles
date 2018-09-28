@@ -249,13 +249,8 @@ _gogo()
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
-  if [ "$prev" = "go" ]
-  then
-    opts="dev woodshop"
-  else
-    path="$HOME/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
-    opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
-  fi
+  path="$HOME/$(join / ${COMP_WORDS[@]:1:${#COMP_WORDS[@]}-2})/*/"
+  opts="$(ls -d $path | sed -E 's/\/$//' | sed -E 's/^.*\///' | xargs echo)"
 
   COMPREPLY=($(compgen -W "${opts}" ${cur}))
   return 0
@@ -263,7 +258,7 @@ _gogo()
 complete -F _gogo gogo
 
 # read from stdin or passed in list of filenames and open in vim
-viml () {
+vimp () {
   # set some options
   cmd="set modifiable | set statusline=%F | set laststatus=2 | copen"
   qflist=""
@@ -441,3 +436,8 @@ source ~/.rcconfig
 source ~/.avrsrc
 source ~/.cienarc
 source ~/.clutchrc
+source ~/.execrankrc
+source ~/execrank/shipyard/util/utils.bash
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+. $(brew --prefix)/etc/bash_completion
+fi

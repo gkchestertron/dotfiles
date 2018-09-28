@@ -14,10 +14,10 @@ rmsvgtitles () {
   done
 }
 
-dev () {
-  tab gogo-dev $1
-  less +F /tmp/watchman-processor.log
-}
+# dev () {
+#   tab gogo-dev $1
+#   less +F /tmp/watchman-processor.log
+# }
 
 tab () {
   osascript 2>/dev/null <<EOF

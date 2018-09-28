@@ -1,5 +1,11 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/Users/jfellman/woodshop/ember-frost-bunsen'
-let g:netrw_dirhist_2='/Users/jfellman/woodshop/ember-frost-bunsen/app'
-let g:netrw_dirhist_3='/Users/jfellman/woodshop/ember-frost-bunsen/app/components'
+let g:netrw_dirhist_cnt =9
+let g:netrw_dirhist_1='/Users/johnfellman/go/src/gitlab.com/execrank'
+let g:netrw_dirhist_2='/Users/johnfellman/go/src/gitlab.com'
+let g:netrw_dirhist_3='/Users/johnfellman/go/src/gitlab.com/execrank'
+let g:netrw_dirhist_4='/Users/johnfellman/go/src/gitlab.com'
+let g:netrw_dirhist_5='/Users/johnfellman/execrank/shipyard'
+let g:netrw_dirhist_6='/Users/johnfellman/execrank/shipyard/api'
+let g:netrw_dirhist_7='/Users/johnfellman/go/src/gitlab.com/execrank/api'
+let g:netrw_dirhist_8='/Users/johnfellman/go/src/gitlab.com/execrank/api/database'
+let g:netrw_dirhist_9='/Users/johnfellman/go/src/gitlab.com/execrank/api/database/migrations'
