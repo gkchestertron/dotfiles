@@ -1,4 +1,3 @@
-
 " basic setup - plugins, color scheme
 execute pathogen#infect()
 colorscheme desert

@@ -1,12 +1,18 @@
 #!/bin/bash
 
 # create a new vimrc
-echo '" set path for .vim folder' > .vimrc
-echo "set rtp^=$(pwd)/.vim" >> .vimrc
+cat > .vimrc <<HERE 
+" let vim know it's not using system .vimrc
+set nocompatible
+" set path for .vim folder
+set rtp^=$(pwd)/.vim
+HERE
 cat .vimrc_template >> .vimrc
 
 cat >> ~/.bash_profile <<HERE
 jff(){
+  vimpath=$(which vim)
+  alias vim="\$vimpath -u $(pwd)/.vimrc"
   source $(pwd)/.jff
 }
 HERE
