@@ -3,6 +3,7 @@ export EDITOR="$VISUAL"
 export TERM='xterm-256color'
 set -o vi
 
+platform=`uname`
 if [ "$platform" = "Linux" ]; then
   setxkbmap -option caps:ctrl_modifier
 fi
