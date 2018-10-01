@@ -3,9 +3,13 @@ export EDITOR="$VISUAL"
 export TERM='xterm-256color'
 set -o vi
 
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
 platform=`uname`
 if [ "$platform" = "Linux" ]; then
-  setxkbmap -option caps:ctrl_modifier
+  if [ ! -z "$(which setxkbmap)" ]; then
+    setxkbmap -option caps:ctrl_modifier
+  fi
 fi
 
 alias nerd='vim -c Nerd'
