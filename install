@@ -9,7 +9,7 @@ set rtp^=$(pwd)/.vim
 HERE
 cat .vimrc_template >> .vimrc
 
-cat >> ~/.bash_profile <<HERE
+cat >> ~/.bashrc <<HERE
 jff(){
   vimpath=$(which vim)
   alias vim="\$vimpath -u $(pwd)/.vimrc"
