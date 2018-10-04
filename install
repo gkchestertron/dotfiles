@@ -5,7 +5,7 @@ cat > .vimrc <<HERE
 " let vim know it's not using system .vimrc
 set nocompatible
 " set path for .vim folder
-set rtp^=$(pwd)/.vim
+set rtp=\$VIMRUNTIME,$(pwd)/.vim,$(pwd)/.vim/bundle/snipmate/after
 HERE
 cat .vimrc_template >> .vimrc
 
