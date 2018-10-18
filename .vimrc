@@ -1,7 +1,7 @@
 " let vim know it's not using system .vimrc
 set nocompatible
 " set path for .vim folder
-set rtp=$VIMRUNTIME,/Users/johnfellman/woodshop/dotfiles/.vim,/Users/johnfellman/woodshop/dotfiles/.vim/bundle/snipmate/after
+set rtp=$VIMRUNTIME,/home/ubuntu/dotfiles/.vim,/home/ubuntu/dotfiles/.vim/bundle/snipmate/after
 " basic setup - plugins, color scheme
 execute pathogen#infect()
 colorscheme desert
