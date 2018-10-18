@@ -11,8 +11,20 @@ cat .vimrc_template >> .vimrc
 
 cat >> ~/.bashrc <<HERE
 jff(){
+  source $(pwd)/.jff
+  source $(pwd)/git-completion.bash
+  source ~/execrank/shipyard/util/utils.bash source || ~/shipyard/util/utils.bash
   vimpath=$(which vim)
   alias vim="\$vimpath -u $(pwd)/.vimrc"
-  source $(pwd)/.jff
+}
+
+jffs() {
+  screen -r || bash -c $' \
+  screen -c $(pwd)/.screenrc -dmS jff; \
+  screen -S jff -p 0 -X stuff "jff
+"
+  screen -S jff -p 0 -X stuff "clear
+"
+  screen -r'
 }
 HERE

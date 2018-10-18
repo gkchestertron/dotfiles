@@ -1,7 +1,7 @@
 " let vim know it's not using system .vimrc
 set nocompatible
 " set path for .vim folder
-set rtp=$VIMRUNTIME,/home/ubuntu/dotfiles/.vim,/home/ubuntu/dotfiles/.vim/bundle/snipmate/after
+set rtp=$VIMRUNTIME,/Users/johnfellman/woodshop/dotfiles/.vim,/Users/johnfellman/woodshop/dotfiles/.vim/bundle/snipmate/after
 " basic setup - plugins, color scheme
 execute pathogen#infect()
 colorscheme desert
@@ -62,7 +62,6 @@ autocmd BufWinEnter *.py :set ts=4 | set sw=4 | set expandtab | set softtabstop=
 autocmd BufWinEnter *.go :set tabstop=2 softtabstop=2 shiftwidth=2 noexpandtab
 autocmd BufWinEnter *.snippets :set noexpandtab
 autocmd BufWinEnter *.graphql :set binary | set noeol
-autocmd BufWinEnter *.png,*.jpg,*.gif,*.ico exec "! ~/.iterm2/imgcat ".expand("%") | :bw
 
 " key mappings
 noremap ; :
