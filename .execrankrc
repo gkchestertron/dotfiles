@@ -1,0 +1,10 @@
+#!/bin/bash
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+# connects to an antlet on our antsle server
+locutus () {
+  base=22000
+  antlet=$1
+  ssh -p $(expr $base + $antlet) root@locutus.local
+}

@@ -1,7 +1,3 @@
-" let vim know it's not using system .vimrc
-set nocompatible
-" set path for .vim folder
-set rtp=$VIMRUNTIME,/home/ubuntu/dotfiles/.vim,/home/ubuntu/dotfiles/.vim/bundle/snipmate/after
 " basic setup - plugins, color scheme
 execute pathogen#infect()
 colorscheme desert
@@ -89,8 +85,8 @@ vmap <Up> [egv
 vmap <Down> ]egv
 
 " eslint
-" let g:syntastic_javascript_checkers=['eslint']
-" let g:javascript_plugin_jsdoc = 1
+let g:syntastic_javascript_checkers=['eslint']
+let g:javascript_plugin_jsdoc = 1
 
 " handle mousing
 if has("mouse")

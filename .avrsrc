@@ -1,4 +1,0 @@
-#!/bin/bash
-
-alias gethead='git checkout master; git svn rebase;'
-alias pushup='git svn dcommit --dry-run; git svn dcommit'

@@ -178,7 +178,7 @@ snippet pn
 	panic("${0:msg}")
 # print
 snippet pr
-	fmt.Printf("\n${1:thing}:\n%#v\n", ${2:$1})
+	fmt.Printf("\n${1:the thing}:\n  %${3:+v}\n", ${2:$1})
 # range
 snippet rn
 	range ${0}
@@ -230,3 +230,6 @@ snippet ga
 	go func(${1} ${2:type}) {
 		${3:/* code */}
 	}(${0})
+# testeract test setup
+snippet tw
+	ctx, services := testeract.TestWith(t, "${1:test_admin@execrank.com}")

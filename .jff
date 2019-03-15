@@ -1,0 +1,144 @@
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export TERM='xterm-256color'
+set -o vi
+
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+platform=`uname`
+if [ "$platform" = "Linux" ]; then
+  if [ ! -z "$(which setxkbmap)" ]; then
+    setxkbmap -option caps:ctrl_modifier
+  fi
+fi
+
+alias nerd='vim -c Nerd'
+alias lsg='ls -AGloh'
+alias status='clear; git branch -vv; git status'
+alias commit='git add -A; git commit'
+
+# read from stdin or passed in list of filenames and open in vim
+vimp () {
+  # set some options
+  cmd="set modifiable | set statusline=%F | set laststatus=2 | copen"
+  qflist=""
+
+  # if we've been passed args (stdin is empty)
+  if [ -t 0 ]
+  then
+    for file in "$@"
+    do
+      # add current working dir to relative paths
+      if [ -z $(echo "$file" | grep "^\/") ]
+      then
+        file="$(pwd)/$file"
+      fi
+
+      # linenumber
+      nums=( $(echo "$file" | grep -o ':[0-9][0-9]*' | sed 's/://g') )
+      lnum=${nums[0]}
+      cnum=${nums[1]}
+      if [ -z "$cnum" ]
+      then
+        cnum=1
+      fi
+
+      if [ -z "$lnum" ]
+      then
+        lnum=1
+      fi
+
+      # strip extras from file
+      file=$(echo $file | sed 's/:.*$//')
+
+      # add to quickfix list for vim
+      qflist="$qflist {\"filename\":\"$file\", \"lnum\": $lnum, \"col\": $cnum},"
+    done
+
+    # set command and open quickfix list in vim
+    cmd="call setqflist([$qflist]) | $cmd"
+    vim -c "$cmd"
+
+  # if we're taking stdin
+  else
+    while read file
+    do
+      # add current working dir to relative paths
+      if [ -z $(echo "$file" | grep "^\/") ]
+      then
+        file="$(pwd)/$file"
+      fi
+
+      # linenumber
+      nums=( $(echo "$file" | grep -o ':[0-9][0-9]*' | sed 's/://g') )
+      lnum=${nums[0]}
+      cnum=${nums[1]}
+      if [ -z "$cnum" ]
+      then
+        cnum=1
+      fi
+
+      if [ -z "$lnum" ]
+      then
+        lnum=1
+      fi
+
+      # strip extras from file
+      file=$(echo $file | sed 's/:.*$//')
+
+      # add to quickfix list for vim
+      qflist="$qflist {\"filename\":\"$file\", \"lnum\": $lnum, \"col\": $cnum},"
+    done
+
+    # set command and open quickfix list in vim (passing - to let vim know we're coming from stdin)
+    cmd="call setqflist([$qflist]) | $cmd"
+    vim - -c "$cmd"
+  fi
+}
+
+# open conflicts in vim
+miff () {
+  diff=$1
+  input=`git status | grep 'both modified' | awk '{print $(NF)}'`
+  files=""
+
+  while read -r line
+  do
+    files="$files {\"filename\":\"$line\", \"lnum\":1},"
+  done <<< "$input"
+
+  vim -c "call setqflist([$files]) | copen"
+}
+
+# Git branch in prompt.
+
+parse_git_branch() {
+  branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
+  BPSO=`echo $branch | grep -oE 'BPSO-\d+'`
+
+	if [ -z $branch ]
+  then
+    echo " "
+  elif [ -z $BPSO ]
+  then
+    echo "$branch"
+  else
+    echo "($BPSO)"
+  fi
+}
+
+export PS1="\[\033[32m\]\u@$(echo $HOSTNAME | sed 's/-.*$//'):\[\033[00m\]\w/\[\033[94m\]\$(parse_git_branch)\[\033[00m\]$ "
+
+pyserv () {
+  if [ ! -z "$1" ]
+  then
+    PORT=$1
+  else
+    PORT=8000
+  fi
+
+  echo $PORT
+  echo "http://localhost:$PORT"
+
+  python -m SimpleHTTPServer $PORT & open "http://localhost:$PORT"
+}

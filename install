@@ -1,34 +1,31 @@
 #!/bin/bash
 
-# save any old dotfiles
-mkdir old_dotfiles
-mv ~/.vim old_dotfiles/
-mv ~/.vimrc old_dotfiles/
-mv ~/.cienarc old_dotfiles/
-mv ~/.avrsrc old_dotfiles/
-mv ~/.clutchrc old_dotfiles/
-mv ~/.bash_profile old_dotfiles/
-mv ~/.bash_profilerc old_dotfiles/
+# create a new vimrc
+cat > .vimrc <<HERE 
+" let vim know it's not using system .vimrc
+set nocompatible
+" set path for .vim folder
+set rtp=\$VIMRUNTIME,$(pwd)/.vim,$(pwd)/.vim/bundle/snipmate/after
+HERE
+cat .vimrc_template >> .vimrc
 
-# create a bash profile that pulls from repo
-echo 'cur_dir=$(pwd)' > .bash_profile
-echo "cd $(pwd); echo pulling dotfiles...; git pull;" >> .bash_profile
-echo 'cd $cur_dir; source ~/.bash_profilerc' >> .bash_profile
+cat >> ~/.bashrc <<HERE
+jff(){
+  source $(pwd)/.jff
+  source $(pwd)/git-completion.bash
+  source $HOME/execrank/shipyard/util/utils.bash > /dev/null 2>&1
+  source $HOME/shipyard/util/utils.bash > /dev/null 2>&1
+  vimpath=$(which vim)
+  alias vim="\$vimpath -u $(pwd)/.vimrc"
+}
 
-# symlink files
-ln -s "$(pwd)/.vim" "$HOME/.vim"
-ln -s "$(pwd)/.vimrc" "$HOME/.vimrc" 
-ln -s "$(pwd)/.avrsrc" "$HOME/.avrsrc" 
-ln -s "$(pwd)/.clutchrc" "$HOME/.clutchrc" 
-ln -s "$(pwd)/.cienarc" "$HOME/.cienarc" 
-ln -s "$(pwd)/.bash_profile" "$HOME/.bash_profile" 
-ln -s "$(pwd)/.bash_profilerc" "$HOME/.bash_profilerc" 
-ln -s "$(pwd)/git-completion.bash" "$HOME/git-completion.bash"
-
-# set some global things for git
-git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-git config --global credential.helper store
-
-cp -n .rcconfig ~/
-echo please set any usernames, passwords, or other sensitive info used in your specific configurations in ~/.rcconfig
-echo if you move this folder, you will need to rerun install
+jffs() {
+  screen -r || bash -c $' \
+  screen -c $(pwd)/.screenrc -dmS jff; \
+  screen -S jff -p 0 -X stuff "jff
+"
+  screen -S jff -p 0 -X stuff "clear
+"
+  screen -r'
+}
+HERE
