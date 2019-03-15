@@ -178,7 +178,7 @@ snippet pn
 	panic("${0:msg}")
 # print
 snippet pr
-	fmt.Printf("%${1:s}\n", ${2:var})
+	fmt.Printf("\n${1:thing}:\n%#v\n", ${2:$1})
 # range
 snippet rn
 	range ${0}

@@ -79,8 +79,8 @@ vmap <Up> [egv
 vmap <Down> ]egv
 
 " eslint
-let g:syntastic_javascript_checkers=['eslint']
-let g:javascript_plugin_jsdoc = 1
+" let g:syntastic_javascript_checkers=['eslint']
+" let g:javascript_plugin_jsdoc = 1
 
 " handle mousing
 if has("mouse")
