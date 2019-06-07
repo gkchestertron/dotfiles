@@ -162,7 +162,7 @@ snippet lp
 snippet mk
 	make(${1:[]string}, ${0:0})
 # map
-snippet mp
+snippet map
 	map[${1:string}]${0:int}
 # main()
 snippet main
@@ -178,7 +178,7 @@ snippet pn
 	panic("${0:msg}")
 # print
 snippet pr
-	fmt.Printf("\n${1:the thing}:\n  %${3:+v}\n", ${2:$1})
+	fmt.Printf("\n${1:the thing}:\n  %${3:+v}\n", ${2:$1}) // prevert
 # range
 snippet rn
 	range ${0}
@@ -233,3 +233,29 @@ snippet ga
 # testeract test setup
 snippet tw
 	ctx, services := testeract.TestWith(t, "${1:test_admin@execrank.com}")
+# struct field with json tag
+snippet sf
+	${1:Name} ${2:string} \`json:"${3:name},omitempty"\`
+# make v2 request
+snippet mv2
+	path := "/v2/${1:locations/}${2}"${3}
+	_, err := common.MakeV2Request(version, common.${4:Post}, path, ${5:reqBody}, ${6:&respBody})
+	if err != nil {
+		return nil, err
+	}
+# e2e test helper
+snippet test
+	{
+		Title: "${1:Title}",
+		SkippedFor: "Not implemented yet",
+		Exec: func(version string, data interface{}) (interface{}, error) {
+			${2}
+			return nil, nil
+		},
+	},
+# respBody helper
+snippet rb
+	var respBody struct {
+		Errors []error \`json:"errors,omitempty"\`
+		${1}
+	}

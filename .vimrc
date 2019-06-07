@@ -1,7 +1,7 @@
 " let vim know it's not using system .vimrc
 set nocompatible
 " set path for .vim folder
-set rtp=$VIMRUNTIME,/home/ubuntu/dotfiles/.vim,/home/ubuntu/dotfiles/.vim/bundle/snipmate/after
+set rtp=$VIMRUNTIME,/Users/jfellman/woodshop/dotfiles/.vim,/Users/jfellman/woodshop/dotfiles/.vim/bundle/snipmate/after
 " basic setup - plugins, color scheme
 execute pathogen#infect()
 colorscheme desert
@@ -43,6 +43,10 @@ set backupcopy=yes
 " special highlighting for console logs and overlength
 highlight ConsoleLog ctermbg=8 ctermfg=yellow
 let c = matchadd('ConsoleLog', 'console\.log')
+highlight TODO ctermbg=8 ctermfg=yellow
+let c = matchadd('TODO', 'TODO\:')
+highlight Revert ctermbg=8 ctermfg=yellow
+let c = matchadd('Revert', '.*prevert.*')
 highlight OverLength ctermbg=17
 let o = matchadd('OverLength', '\%81v.\+')
 
@@ -96,3 +100,5 @@ let g:javascript_plugin_jsdoc = 1
 if has("mouse")
     set mouse=a
 endif
+
+" macros
