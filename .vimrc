@@ -3,7 +3,6 @@ set nocompatible
 " set path for .vim folder
 set rtp=$VIMRUNTIME,/home/dobby/woodshop/dotfiles/.vim,/home/dobby/woodshop/dotfiles/.vim/bundle/snipmate/after
 " basic setup - plugins, color scheme
-execute pathogen#infect()
 colorscheme desert
 
 let g:rainbow_active = 1
