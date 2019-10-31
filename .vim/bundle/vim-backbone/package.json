@@ -11,7 +11,7 @@
     "nopt": "~1.0.10"
   },
   "devDependencies": {
-    "request": "~2.9.202",
+    "request": "~2.88.0",
     "trumpet": "~0.2.4"
   }
 }
