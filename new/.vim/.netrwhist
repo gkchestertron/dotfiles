@@ -1,0 +1,3 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =1
+let g:netrw_dirhist_1='/Users/jfellman/shop/coc.nvim/node_modules/vscode-languageserver-protocol/lib'

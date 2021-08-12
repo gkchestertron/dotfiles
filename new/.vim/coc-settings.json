@@ -1,0 +1,20 @@
+{
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true
+      }
+    },
+    "java": {
+      "command": "/Users/jfellman/shop/java-ls/server.js",
+      "filetypes": ["java"],
+      "initializationOptions": {
+        "usePlaceholders": true
+      }
+    }
+  },
+  "solargraph.diagnostics": true
+}

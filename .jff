@@ -16,89 +16,60 @@ alias nerd='vim -c Nerd'
 alias lsd='ls -AGloh'
 alias status='clear; git branch -vv; git status -uno'
 alias commit='git add -A; git commit'
-
-_gogo-usage() {
-  cat<<HERE
-  usage:
-
-  gogo <path> - will search java and go (and go/xp) repos for folder and cd to it
-HERE
-}
-
-javadir=/Users/jfellman/Development/java
-godir=/Users/jfellman/Development/go/src/square/up
-xpdir=/Users/jfellman/Development/go/src/square/up/xp
-githubdir=/Users/jfellman/Development/go/src/github.com/square
+alias commend='git add -A; git commit --amend'
 
 gogo() {
-  path=$1
+  dest="$1"
+  subdest="$2"
+  if [ -z "$dest" ]; then
+    cd $HOME/Development
+  elif [ "$dest" = "java" ]; then
+    cd $HOME/Development/java
+  elif [ "$dest" = "oas" ]; then
+    cd $HOME/Development/go/src/github.com/squareup/xp-oas-pipeline
+  elif [ "$dest" = "tf" ]; then
+    cd $HOME/Development/TF
+  elif [ "$dest" = "go" ]; then
+    cd $HOME/Development/go/src/square/up
+  fi
 
-  if [ -z "$1" ]; then
-    _gogo-usage
-  elif [ "$1" = "go" ] && [ -z "$2" ]; then
-    cd $godir
-  elif [ "$1" = "xp" ] && [ -z "$2" ]; then
-    cd $xpdir
-  elif [ "$1" = "java" ] && [ -z "$2" ]; then
-    cd $javadir
-  elif [ -z "$2" ]; then
-    javas=`ls $javadir | grep $1`
-    gos=`ls $godir | grep $1`
-    xps=`ls $xpdir | grep $1`
-  else
-    if [ "$1" = "go" ]; then
-      gogodir=$godir
-    elif [ "$1" = "xp" ]; then
-      gogodir=$xpdir
-    elif [ "$1" = "java" ]; then
-      gogodir=$javadir
-    elif [ "$1" = "github" ]; then
-      gogodir=$githubdir
-    fi
-
-    repos=`ls $gogodir | grep $2`
-
-    if [ "${#repos[@]}" = "1" ]; then
-      // TODO implement subfolders
-      cd $gogodir/${repos[0]}
-    fi
+  if [ ! -z $subdest ]; then
+    cd $subdest
   fi
 }
 
-_gogo-completion() {
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  prev="${COMP_WORDS[COMP_CWORD-1]}"
-  dir="${COMP_WORDS[1]}" 
-  proj="${COMP_WORDS[2]}"
+_gogo_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
 
-  if [ -z "$dir" ] || [ "$dir" = "$cur" ]; then
-    words="go xp java github"
-  else
-    if [ "$dir" = "go" ]; then
-      gogodir=$godir
-    elif [ "$dir" = "xp" ]; then
-      gogodir=$xpdir
-    elif [ "$dir" = "java" ]; then
-      gogodir=$javadir
-    elif [ "$dir" = "github" ]; then
-      gogodir=$githubdir
+  if [ "${COMP_CWORD}" -eq 1 ]; then
+    COMPREPLY=($(compgen -W "go java oas tf xp" -- "$cur"))
+  else 
+    local prev="${COMP_WORDS[COMP_CWORD - 1]}"
+    local dir=""
+    if [ $prev = "xp" ]; then
+      dir="$HOME/Development/go/src/git.sqcorp.co/XP"
+    elif [ $prev = "java" ]; then
+      dir="$HOME/Development/java"
+    elif [ $prev = "oas" ]; then
+      dir="$HOME/Development/go/src/git.sqcorp.co/XP/oas-pipeline"
+    elif [ $prev = "tf" ]; then
+      dir="$HOME/Development/TF"
+    elif [ $prev = "go" ]; then
+      dir="$HOME/Development/go/src/square/up"
     fi
-    if [ -z "$proj" ] || [ "$proj" = "$cur" ]; then
-      words=`cd $gogodir && ls -d */ | sed 's/\///'`
-      words="${words[@]}"
-    else
-      if [ -z "$cur" ]; then
-        projpath="$gogodir/$(echo ${COMP_WORDS[@]:2} | sed 's/ /\//g')"
-      else
-        projpath="$gogodir/$(echo ${COMP_WORDS[@]:2:COMP_CWORD-2} | sed 's/ /\//g')"
-      fi
-      words=`cd $projpath && ls -d */ 2>/dev/null | sed 's/\///g'`
-    fi
+    local a=`cd $dir ; ls -d */`
+    COMPREPLY=($(compgen -W "${a[@]}" -- "$cur"))
   fi
-  COMPREPLY=( $(compgen -W "${words}" -- ${cur}) )
 }
 
-# complete -F _gogo-completion gogo
+
+woot() {
+	resetcolor="\033[0m"
+	successcolor="\033[1;32m"
+	warningcolor="\033[33m"
+
+  printf "${successcolor}Woot! ${warningcolor}\( ﾟヮﾟ)/${resetcolor}\n"
+}
 
 # read from stdin or passed in list of filenames and open in vim
 vimp () {
@@ -197,16 +168,16 @@ miff () {
 
 parse_git_branch() {
   branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
-  BPSO=`echo $branch | grep -oE 'BPSO-\d+'`
+  TCKT=`echo $branch | grep -oE '[A-Z]+-\d+'`
 
-	if [ -z $branch ]
+	if [ -z "$branch" ]
   then
     echo " "
-  elif [ -z $BPSO ]
+  elif [ -z "$TCKT" ]
   then
     echo "$branch"
   else
-    echo "($BPSO)"
+    echo "($TCKT)"
   fi
 }
 
